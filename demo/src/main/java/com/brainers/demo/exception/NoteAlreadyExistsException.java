@@ -1,6 +1,6 @@
 package com.brainers.demo.exception;
 
-public class NoteAlreadyExistsException{
+public class NoteAlreadyExistsException extends RuntimeException{
     public NoteAlreadyExistsException(String message){
         super(message);
     }
