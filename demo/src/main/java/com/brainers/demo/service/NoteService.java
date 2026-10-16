@@ -21,12 +21,11 @@ public class NoteService{
         this.repository = noteRepository;
     }
 
-    public List<NoteResponse> getAll(){
-        List<Note> notes = repository.findAll();
-        
+    public List<NoteResponse> getNotes(String search){
+        List<Note> notes = search == null ? repository.findAll() : repository.findByTitleContainingIgnoreCase(search);
         return notes.stream()
-                    .map(note -> new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateDatetime()))
-                    .toList();
+                .map(note -> new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateDatetime()))
+                .toList();
     }
     
     public NoteResponse findById(Long id){

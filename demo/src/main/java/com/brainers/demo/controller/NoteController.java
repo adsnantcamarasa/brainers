@@ -6,13 +6,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.brainers.demo.model.dto.NoteRequest;
@@ -34,8 +28,8 @@ public class NoteController{
     }
 
     @GetMapping("/notes")
-    public List<NoteResponse> getAll(){
-        return this.service.getAll();
+    public List<NoteResponse> getAll(@RequestParam(value = "title", required = false) String search){
+        return this.service.getNotes(search);
     }
 
     @GetMapping("/notes/{id}")
