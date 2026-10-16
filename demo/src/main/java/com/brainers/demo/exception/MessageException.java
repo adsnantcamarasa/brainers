@@ -10,8 +10,7 @@ public enum MessageException{
         this.messageException = messageException;
     }
 
-    // Get message
-    String getMessageExeption(){
+    public String getMessageException(){
         return this.messageException;
     }
 }

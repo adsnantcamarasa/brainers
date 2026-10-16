@@ -1,3 +1,5 @@
+package com.brainers.demo.model.dto;
+
 public class NoteRequest{
     private String title;
     private String content;

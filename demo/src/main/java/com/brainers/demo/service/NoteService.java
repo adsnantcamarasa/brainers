@@ -30,14 +30,14 @@ public class NoteService{
     }
     
     public NoteResponse findById(Long id){
-        Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND));
+        Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
 
         return new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateDatetime());
     }
 
     public NoteResponse create(NoteRequest request){
         if (repository.findNoteByTitle(request.getTitle()).isPresent()) { 
-            throw new NoteAlreadyExistsException(MessageException.NOTE_ALREADY_EXIST);
+            throw new NoteAlreadyExistsException(MessageException.NOTE_ALREADY_EXIST.getMessageException());
         }       
 
         Note savedNote = repository.save(new Note(request.getTitle(), request.getContent()));
@@ -45,7 +45,7 @@ public class NoteService{
     }
 
     public NoteResponse update(Long id, NoteRequest request){
-        Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND));
+        Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
         
         note.setTitle(request.getTitle());
         note.setContent(request.getContent());
@@ -62,7 +62,7 @@ public class NoteService{
     }
 
     public void delete(Long id){
-        Note note = this.repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND));
+        Note note = this.repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
         this.repository.delete(note);        
     }
 }
