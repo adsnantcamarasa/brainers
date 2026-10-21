@@ -17,8 +17,7 @@ public class Note {
 
     @Column(nullable = false)
     private String content;
-    
-    // Champs qui viennent de la DB
+
     @CreationTimestamp
     @Column(nullable = false,  updatable = false)
     private LocalDateTime createdAt;
@@ -33,12 +32,11 @@ public class Note {
         this.content = content;
     }
 
-
     public Long getId(){return this.id;}
     public String getTitle(){return this.title;}
     public String getContent(){return this.content;}
     public LocalDateTime getCreatedAt(){return this.createdAt;}
-    public LocalDateTime getLastUpdateDatetime(){return this.lastUpdateAt;}
+    public LocalDateTime getLastUpdateAt(){return this.lastUpdateAt;}
 
 
     public void setTitle(String newTitle){this.title = newTitle;}

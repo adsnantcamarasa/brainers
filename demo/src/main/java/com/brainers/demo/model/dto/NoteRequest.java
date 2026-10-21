@@ -1,18 +1,11 @@
 package com.brainers.demo.model.dto;
 
-public class NoteRequest{
-    private String title;
-    private String content;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-    public NoteRequest(String title, String content){
-        this.title   = title;
-        this.content = content; 
-    }
-
-    public String getTitle(){
-        return this.title;
-    }
-    public String getContent(){
-        return this.content;
-    }
-}
+public record NoteRequest(
+        @NotBlank
+        @Size(max = 100)
+        String title,
+        String content
+        ){}

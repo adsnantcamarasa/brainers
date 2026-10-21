@@ -17,9 +17,9 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // Vos 4 notes initiales
         this.noteRepository.save(new Note("Stream java", "LEs streams en java servent à traiter des collections d'objets de manière fonctionnelle."));
-        this.noteRepository.save(new Note("Spring boot", "Spring Boot est un framework open source basé sur le framework Spring, qui simplifie le développement d'applications Java en fournissant une configuration automatique"));    
-        this.noteRepository.save(new Note("Lambda java", "Une expression lambda est une fonction anonyme qui peut être utilisée pour créer des instances de classes fonctionnelles en Java."));
-        this.noteRepository.save(new Note("Status http", "Les codes de statut HTTP sont des codes numériques renvoyés par un serveur web pour indiquer le résultat d'une requête HTTP. Ils sont utilisés pour informer le client (navigateur ou application) de l'état de la demande et de la réponse du serveur."));
+        this.noteRepository.save(new Note("Spring boot framework", "Spring Boot est un framework open source basé sur le framework Spring, qui simplifie le développement d'applications Java en fournissant une configuration automatique"));
+        this.noteRepository.save(new Note("Les lambda en java", "Une expression lambda est une fonction anonyme qui peut être utilisée pour créer des instances de classes fonctionnelles en Java."));
+        this.noteRepository.save(new Note("Qu'est ce qu'un statut http", "Les codes de statut HTTP sont des codes numériques renvoyés par un serveur web pour indiquer le résultat d'une requête HTTP. Ils sont utilisés pour informer le client (navigateur ou application) de l'état de la demande et de la réponse du serveur."));
         
         // 16 nouvelles notes pour atteindre un total de 20
         this.noteRepository.save(new Note("Optional Java", "La classe Optional introduite en Java 8 permet de réduire les risques de NullPointerException en encapsulant des valeurs potentiellement nulles."));

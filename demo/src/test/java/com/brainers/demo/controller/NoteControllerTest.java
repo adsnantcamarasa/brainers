@@ -1,25 +1,19 @@
 package com.brainers.demo.controller;
-import com.brainers.demo.model.domain.Note;
 import com.brainers.demo.model.dto.NoteResponse;
 import com.brainers.demo.service.NoteService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(NoteController.class)
 public class NoteControllerTest {
@@ -30,32 +24,15 @@ public class NoteControllerTest {
     @MockitoBean
     private NoteService noteService;
 
-    // ___________________ getAll ___________________
-    /**
-     * Le rôle du test controller avec mockMVC est de vérifier le contrat d'interface(API) entre notre app et les clients(front-end)
-     * Détails de ce que fait le controller :
-     *
-     * 1. Le contrat http (le protocole)
-     * • Le type de requête : Est-ce que la route accepte bien du GET ? Si quelqu'un envoie un POST sur /notes, est-ce que l'API renvoie bien une erreur (405 Method Not Allowed) ?
-     *• Le code de statut : Quand tout se passe bien, est-ce que l'API répond bien avec un statut 200 OK ? (Parfois, un bug de configuration peut faire cracher une 500 alors que le service a bien travaillé).
-     *
-     * 2. La sérialisation JSON (Le format des données)
-     * • La structure du JSON : Est-ce que Spring réussit à transformer cette liste Java en un tableau JSON [...] ?
-     * • Les clés du JSON : Est-ce que les champs de ton objet (ex: id, title, content) sont correctement nommés dans le JSON final ?
-     *
-     * 3. La gestion du paramètre optionnel (?title=...)
-     * Scénario A : Sans paramètre (GET /notes)
-     * • Si l'URL est /notes, le contrôleur appelle service.getNotes(null).
-     *
-     * Scénario B : Avec paramètre (GET /notes?title=Java)
-     *  • Si l'URL est /notes?title=Java, le contrôleur extrait bien "Java" et appelle service.getNotes("Java").
-     */
-
+    // _______________________________________________ getAll __________________________________________________________
     @Test
-    public void getAllShouldReturn200() throws Exception {
-        // GET "Notes" httpStatus.ok
+    public void get_all_empty_should_return_empty_list_with_200() throws Exception{
+        when(noteService.getNotes(null)).thenReturn(List.of());
+
         mockMvc.perform(get("/notes"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+
     }
 
     @Test
@@ -72,7 +49,6 @@ public class NoteControllerTest {
         verify(noteService).getNotes(searchTerms);
     }
 
-
     @Test
     public void should_call_service_with_null_when_title_param_is_absent()throws Exception{
         when(noteService.getNotes(null))
@@ -83,8 +59,52 @@ public class NoteControllerTest {
                 ));
 
         mockMvc.perform(get("/notes"))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(status().isOk());
 
         verify(noteService).getNotes(null);
     }
+
+    @Test
+    public void should_contain_correct_name_field()throws Exception{
+        NoteResponse noteResponse =  new NoteResponse(
+                1L,
+                "Stream en java",
+                "this is a test content",
+                LocalDateTime.of(2026, 12, 10, 10, 40, 10),
+                LocalDateTime.of(2026, 12, 10, 10, 40, 10));
+
+        when(noteService.getNotes(null))
+                .thenReturn(List.of(
+                        noteResponse
+                ));
+
+        mockMvc.perform(get("/notes"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.length()").value(1),
+                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[0].title").value("Stream en java"),
+                        jsonPath("$[0].content").value("this is a test content"),
+                        jsonPath("[0].createdAt").value("2026-12-10T10:40:10"),
+                        jsonPath("[0].lastUpdateAt").value("2026-12-10T10:40:10")
+                );
+    }
+
+    // ______________________________________________ getById __________________________________________________________
+    @Test
+    public void should_return_correct_id() throws Exception{
+        when(noteService.findById(42L))
+                        .thenReturn(new NoteResponse(7L, "Stream in java", "This is a content", LocalDateTime.now(), LocalDateTime.now()));
+
+        mockMvc.perform(get("/notes/42"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(7));
+
+        verify(noteService).findById(42L);
+    }
+
+    // TODO => Tester le cas d'érreur.
+    @Test
+    public void should_return_note_note_foud_exception_in_body_when_id_does_not_exist() throws Exception{}
 }

@@ -24,30 +24,30 @@ public class NoteService{
     public List<NoteResponse> getNotes(String search){
         List<Note> notes = search == null ? repository.findAll() : repository.findByTitleContainingIgnoreCase(search);
         return notes.stream()
-                .map(note -> new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateDatetime()))
+                .map(note -> new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateAt()))
                 .toList();
     }
     
     public NoteResponse findById(Long id){
         Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
 
-        return new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateDatetime());
+        return new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateAt());
     }
 
     public NoteResponse create(NoteRequest request){
-        if (repository.findNoteByTitle(request.getTitle()).isPresent()) { 
+        if (repository.findNoteByTitle(request.title()).isPresent()) {
             throw new NoteAlreadyExistsException(MessageException.NOTE_ALREADY_EXIST.getMessageException());
         }       
 
-        Note savedNote = repository.save(new Note(request.getTitle(), request.getContent()));
-        return new NoteResponse(savedNote.getId(), savedNote.getTitle(), savedNote.getContent(), savedNote.getCreatedAt(), savedNote.getLastUpdateDatetime());
+        Note savedNote = repository.save(new Note(request.title(), request.content()));
+        return new NoteResponse(savedNote.getId(), savedNote.getTitle(), savedNote.getContent(), savedNote.getCreatedAt(), savedNote.getLastUpdateAt());
     }
 
     public NoteResponse update(Long id, NoteRequest request){
         Note note = repository.findById(id).orElseThrow(() -> new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
         
-        note.setTitle(request.getTitle());
-        note.setContent(request.getContent());
+        note.setTitle(request.title());
+        note.setContent(request.content());
 
         Note savedNote = repository.save(note);
         
@@ -56,7 +56,7 @@ public class NoteService{
             savedNote.getTitle(), 
             savedNote.getContent(), 
             savedNote.getCreatedAt(), 
-            savedNote.getLastUpdateDatetime()
+            savedNote.getLastUpdateAt()
         );
     }
 
