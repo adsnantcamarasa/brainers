@@ -1,4 +1,6 @@
 package com.brainers.demo.controller;
+import com.brainers.demo.exception.MessageException;
+import com.brainers.demo.exception.NoteNotFoundException;
 import com.brainers.demo.model.dto.NoteResponse;
 import com.brainers.demo.service.NoteService;
 import org.junit.jupiter.api.Test;
@@ -104,7 +106,14 @@ public class NoteControllerTest {
         verify(noteService).findById(42L);
     }
 
-    // TODO => Tester le cas d'érreur.
+
     @Test
-    public void should_return_note_note_foud_exception_in_body_when_id_does_not_exist() throws Exception{}
+    public void should_return_note_not_foud_exception_in_body_when_id_does_not_exist() throws Exception{
+        when(noteService.findById(99L))
+                .thenThrow(new NoteNotFoundException(MessageException.NOTE_NOT_FOUND.getMessageException()));
+
+        mockMvc.perform(get("/notes/99"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value(MessageException.NOTE_NOT_FOUND.getMessageException()));
+    }
 }

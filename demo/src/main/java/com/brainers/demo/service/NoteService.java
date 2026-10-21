@@ -23,6 +23,7 @@ public class NoteService{
 
     public List<NoteResponse> getNotes(String search){
         List<Note> notes = search == null ? repository.findAll() : repository.findByTitleContainingIgnoreCase(search);
+        // MapStruct
         return notes.stream()
                 .map(note -> new NoteResponse(note.getId(), note.getTitle(), note.getContent(), note.getCreatedAt(), note.getLastUpdateAt()))
                 .toList();
